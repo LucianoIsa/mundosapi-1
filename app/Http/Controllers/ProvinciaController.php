@@ -17,6 +17,16 @@ class ProvinciaController extends Controller
     public function index()
     {
         //
+        //$provincias = Provincia::all();  //traigo todos los registros de la BD
+        $provincias = Provincia::select('nombre')-> get(); //traigo solo los nombres de las provincias
+        return response() ->json($provincias); //puedo ponerlo asi, o de la siguiente manera
+        /**
+        *return response() ->json([
+        *    'mensaje'=>'Listado de Provincias',
+        *  'data'=> $provincias
+        ]);
+        */
+
     }
 
     /**

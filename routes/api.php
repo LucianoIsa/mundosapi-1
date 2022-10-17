@@ -24,3 +24,7 @@ Route::get('/provincia', [ProvinciaController::class, 'getProvinciaSinParametro'
 Route::get('/provincias/{id}', [ProvinciaController::class, 'getProvinciaConParametro']);
 
 Route::get('/provinciaAlternativa/{id?}', [ProvinciaController::class, 'getProvinciaAlternativa']);
+
+// Ruta para visualizar todas las provincias registradas en la BD
+Route::get('/provincias', [ProvinciaController::class, 'getProvinciaSinParametro']);
+//Ruta para el registro de una provincia en la Base de Datos
