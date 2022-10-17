@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barrio;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class BarrioController extends Controller
 {
