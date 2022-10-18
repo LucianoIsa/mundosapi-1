@@ -16,6 +16,7 @@ class Provincia extends Model
 
     protected $connection = 'mysql';
     protected $fillable  =[     //Solo van los datos que no son la clave primaria
-        'nombre'
+        'nombre',
+        'indec_id'
     ];
 }

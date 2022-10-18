@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use App\Models\Provincia;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProvinciaController extends Controller
@@ -17,8 +17,8 @@ class ProvinciaController extends Controller
     public function index()
     {
         //
-        //$provincias = Provincia::all();  //traigo todos los registros de la BD
-        $provincias = Provincia::select('nombre')-> get(); //traigo solo los nombres de las provincias
+        $provincias = Provincia::all();  //traigo todos los registros de la BD
+        //$provincias = Provincia::select('nombre')-> get(); //traigo solo los nombres de las provincias
         return response() ->json($provincias); //puedo ponerlo asi, o de la siguiente manera
         /**
         *return response() ->json([
@@ -47,7 +47,15 @@ class ProvinciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $provincia = Provincia::create([    //Crea una provincia c/el atributo nombre con ese valor que tiene nombre
+            'nombre' => $request['nombre'], //el nombre de la derecha es el mismo campo que la BD
+            'indec_id' => $request['indec']
+        ]);
+
+        return response([
+            'mensaje' => 'La provincia se agregó correctamente',
+            'data'=> $provincia
+        ]);
     }
 
     /**
