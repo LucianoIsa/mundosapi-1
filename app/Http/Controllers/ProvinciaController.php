@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use id;
 use GuzzleHttp\Client;
 use App\Models\Provincia;
+use App\Mail\ContactEmail;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,14 +22,13 @@ class ProvinciaController extends Controller
         //
         $provincias = Provincia::all();  //traigo todos los registros de la BD
         //$provincias = Provincia::select('nombre')-> get(); //traigo solo los nombres de las provincias
-        return response() ->json($provincias); //puedo ponerlo asi, o de la siguiente manera
+        return response()->json($provincias); //puedo ponerlo asi, o de la siguiente manera
         /**
-        *return response() ->json([
-        *    'mensaje'=>'Listado de Provincias',
-        *  'data'=> $provincias
+         *return response() ->json([
+         *    'mensaje'=>'Listado de Provincias',
+         *  'data'=> $provincias
         ]);
-        */
-
+         */
     }
 
     /**
@@ -51,10 +53,16 @@ class ProvinciaController extends Controller
             'nombre' => $request['nombre'], //el nombre de la derecha es el mismo campo que la BD
             'indec_id' => $request['indec']
         ]);
+        $details = [
+            'title' => 'Se ha registrado una nueva Provincia: ' ,
+            'body' => $provincia->nombre
+        ];
+
+        Mail::to('lucianoisabb@hotmail.com')->send(new ContactEmail($details));
 
         return response([
             'mensaje' => 'La provincia se agregó correctamente',
-            'data'=> $provincia
+            'data' => $provincia
         ]);
     }
 
@@ -87,9 +95,18 @@ class ProvinciaController extends Controller
      * @param  \App\Models\Provincia  $provincia
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Provincia $provincia)
+    public function update(Request $request, int $id)
     {
-        //
+        $provincia = Provincia::findorFail($id);
+
+        $provincia->nombre = $request['nombre'];
+
+        $provincia->save();
+
+        return response()->json([
+            'mensaje' => 'La actualizacion se realizo correctamente',
+            'data' => $provincia
+        ], 200);
     }
 
     /**
@@ -98,9 +115,16 @@ class ProvinciaController extends Controller
      * @param  \App\Models\Provincia  $provincia
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Provincia $provincia)
+    public function destroy(int $id)
     {
-        //
+        //Elimino Provincias
+        $provincia = Provincia::findorFail($id);
+        $provincia->delete();
+
+        return response()->json([
+            'mensaje' => 'Se ha desactivado correctamente la Provincia',
+            'data' => $provincia
+        ], 200);
     }
     public function getProvinciaSinParametro()
     {
@@ -130,5 +154,16 @@ class ProvinciaController extends Controller
         $provincias = json_decode($res->getBody(), true);
 
         return response()->json($provincias['municipios']);
+    }
+
+    public function restore(int $id)
+    {
+        $provincia = Provincia::withTrashed()
+            ->where('id', $id)
+            ->restore();
+
+        return response()->json([
+            'mensaje' => $provincia ? 'Se ha REACTIVADO correctamente la Provincia' : 'Hubo un ERROR al intentar reactivar el registro',
+        ], 200);
     }
 }

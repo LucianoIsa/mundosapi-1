@@ -30,3 +30,12 @@ Route::get('/provincias', [ProvinciaController::class, 'index']);
 
 //Ruta para el registro de una provincia en la Base de Datos
 Route::post('/insert-provincias', [ProvinciaController::class, 'store']);
+
+//Ruta para actualizar
+Route::put('/update-provincias/{id}', [ProvinciaController::class, 'update']);
+
+//Ruta para eliminar
+Route::delete('/delete-provincias/{id}', [ProvinciaController::class, 'destroy']);
+
+//Ruta para RESTAURAR O REACTIVAR UNA PROVINCIA
+Route::put('/restore-provincias/{id}', [ProvinciaController::class, 'restore']);
